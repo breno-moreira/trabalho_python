@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Playlist</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <h1>Cadastro para músicas</h1>
+
+        <button type="button" class="btn btn-primary" onclick="novo()">Novo</button>
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Titulo</th>
+                    <th>Artista</th>
+                    <th>Ano de lançamento</th>
+                    <th>Gênero</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="lista"></tbody>
+        </table>
+
+        <div class="modal" tabindex="-1" id="modalcadastro">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cadastro de Música</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formcadastro">
+                            <input type="hidden" id="idmusica">
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">Titulo</label>
+                                <input type="text" class="form-control" id="titulo" name="titulo">
+                            </div>
+                            <div class="mb-3">
+                                <label for="artista" class="form-label">Artista</label>
+                                <input type="text" class="form-control" id="artista" name="artista">
+                            </div>
+                            <div class="mb-3">
+                                <label for="anolancamento" class="form-label">Ano de lançamento</label>
+                                <input type="number" class="form-control" id="ano" name="ano">
+                            </div>
+                            <div class="mb-3">
+                                <label for="genero" class="form-label">Gênero</label>
+                                <input type="text" class="form-control" id="genero" name="genero">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="salvar()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="musica.js"></script>
+    </body>
+</html>
