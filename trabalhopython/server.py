@@ -1,17 +1,20 @@
 from flask import Flask, send_from_directory
-from musica import musica_bp  # Alterado para importar o Blueprint de músicas
+from musica import musica_bp
 import os
 from flask_cors import CORS
+import webbrowser
+import threading        
 
-app = Flask( _titulo_,static_url_path='', static_folder='static')
-CORS(app, origins=["http://localhost:5000"])
+app = Flask(__name__, static_url_path='', static_folder='static')
+CORS(app, origins=["http://127.0.0.1:3333"])
 
-# Registro do blueprint de músicas
 app.register_blueprint(musica_bp)
 
 @app.route('/')
-def index():
+def home():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'index.html')
 
-if _titulo_ == "_main_":
-    app.run(debug=True)
+
+if __name__ == "__main__":
+    threading.Timer(1.25, lambda: webbrowser.open('http://127.0.0.1:3333/')).start()
+    app.run(debug=True, port=3333)
