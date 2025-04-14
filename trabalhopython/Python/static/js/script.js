@@ -24,8 +24,8 @@ function salvar() {
     const musicas = {
         idmusica: id,
         titulo: titulo,
-        ano: ano,
         artista: artista,
+        ano: ano,
         genero: genero
     };
 

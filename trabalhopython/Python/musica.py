@@ -12,31 +12,43 @@ def inserir_musica():
         conn = connect_db()
         cursor = conn.cursor()
         data = request.json
-        sql = "INSERT INTO musica (titulo, ano, genero, artista) VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO musica1 (titulo, ano, genero, artista) VALUES (%s, %s, %s, %s)"
         cursor.execute(sql, (data['titulo'], data['ano'], data['genero'], data['artista']))
         conn.commit()
         return jsonify({"message": "Música inserida com sucesso!", "success": True}), 201
     except Exception as e:
-        return jsonify({"message": str(e), "success": False}), 500
+        return jsonify({"messagle": str(e), "success": False}), 500
     finally:
         cursor.close()
         conn.close()
 
 # Atualizar música
-@musica_bp.route('/musica/<int:id>', methods=['PUT'])
-def atualizar_musica(id):
+@musica_bp.route("/musica/<id>/", methods=["PUT"])
+def editar(id):
     try:
         conn = connect_db()
-        cursor = conn.cursor()
-        data = request.json
-        sql = "UPDATE musica SET titulo = %s, ano = %s, genero = %s, artista = %s WHERE idmusica = %s"
-        cursor.execute(sql, (data['titulo'], data['ano'], data['genero'], data['artista'], id))
+        cur = conn.cursor(pymysql.cursors.DictCursor)
+        musica = request.json
+        titulo = musica["titulo"]
+        artista = musica["artista"]
+        ano = musica["ano"]
+        genero = musica["genero"]
+
+        cur.execute("""
+            UPDATE musica 
+            SET titulo = %s, artista = %s, ano = %s, genero = %s 
+            WHERE idmusica = %s
+        """, (titulo, artista, ano, genero, id))
+        
         conn.commit()
-        return jsonify({"message": "Música atualizada com sucesso!", "success": True}), 200
+        resp = jsonify({"message": "Música alterada com sucesso!"})
+        resp.status_code = 200
+        return resp
     except Exception as e:
-        return jsonify({"message": str(e), "success": False}), 500
+        print(e)
+        return jsonify({"error": str(e)}), 500
     finally:
-        cursor.close()
+        cur.close()
         conn.close()
 
 # Deletar música
@@ -45,7 +57,7 @@ def deletar_musica(id):
     try:
         conn = connect_db()
         cursor = conn.cursor()
-        sql = "DELETE FROM musica WHERE idmusica = %s"
+        sql = "DELETE FROM musica1 WHERE idmusica = %s"
         cursor.execute(sql, (id,))
         conn.commit()
         return jsonify({"message": "Música excluída com sucesso!", "success": True}), 200
@@ -55,26 +67,22 @@ def deletar_musica(id):
         cursor.close()
         conn.close()
 
-# Listar músicas (com filtro opcional por título)
-@musica_bp.route('/musicas', methods=['GET'])
-def listar_musicas():
+# Listar músicas
+@musica_bp.route('/musica', methods=['GET'])
+def listar():
     try:
         conn = connect_db()
-        cursor = conn.cursor()
-        titulo = request.args.get('titulo')
-        sql = "SELECT * FROM musica"
-        params = ()
-        if titulo:
-            sql += " WHERE titulo LIKE %s"
-            params = (f"%{titulo}%",)
-        cursor.execute(sql, params)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM musica1")
         rows = cursor.fetchall()
         return jsonify(rows), 200
     except Exception as e:
-        return jsonify({"message": str(e), "success": False}), 500
+        print("Erro ao listar músicas:", e)
+        return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
+
 
 # Buscar por ID
 @musica_bp.route('/musica/<int:id>', methods=['GET'])
@@ -82,7 +90,7 @@ def buscar_musica_por_id(id):
     try:
         conn = connect_db()
         cursor = conn.cursor()
-        sql = "SELECT * FROM musica WHERE idmusica = %s"
+        sql = "SELECT * FROM musica1 WHERE idmusica = %s"
         cursor.execute(sql, (id,))
         row = cursor.fetchone()
         if row:
